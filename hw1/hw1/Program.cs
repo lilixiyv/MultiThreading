@@ -19,6 +19,8 @@ namespace Homework1
         }
 
         public Cake cake = new Cake(0);
+        public Semaphore ProduceSema = new Semaphore(1, 1);
+        public Semaphore ConsumeSema = new Semaphore(0, 1);
         public void P(Semaphore sema) => sema.WaitOne();
         public void V(Semaphore sema) => sema.Release();
 
@@ -36,19 +38,23 @@ namespace Homework1
         public void Produce()
         {
             // 可以加东西
-            
+            P(ProduceSema);
+
             Producer.ProduceACake(cake); // 这句话不允许改，但可以在前后加代码
-            
+
+            V(ConsumeSema);
             // 可以加东西
         }
 
         public void Consume()
         {
             // 可以加东西
-            
+            P(ConsumeSema);
+
             Consumer.ConsumeACake(cake); // 这句话不允许改，但可以在前后加代码
 
             // 可以加东西
+            V(ProduceSema);
         }
         
         // 可以加东西
